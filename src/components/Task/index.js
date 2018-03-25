@@ -13,6 +13,7 @@ class Task extends Component {
         super();
         this.deleteTask = this.deleteTask.bind(this);
         this.addPriority = this.addPriority.bind(this);
+        this.makeCompleted = this.makeCompleted.bind(this);
     }
 
     deleteTask () {
@@ -27,12 +28,23 @@ class Task extends Component {
         addPriority(text, priority);
     }
 
+    makeCompleted () {
+        const { makeCompleted, text, completed } = this.props;
+
+        makeCompleted(text, completed);
+    }
+
     render () {
-        const { text, priority } = this.props;
+        const { text, priority, completed } = this.props;
 
         return (
             <li className = { Styles.task }>
-                <Checkbox color1 = { palette.blue } color2 = { palette.white } />
+                <Checkbox
+                    checked = { completed }
+                    color1 = { palette.blue }
+                    color2 = { palette.white }
+                    onClick = { this.makeCompleted }
+                />
                 <span>{text}</span>
                 <div>
                     <Star

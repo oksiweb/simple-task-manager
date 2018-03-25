@@ -12,23 +12,35 @@ class Task extends Component {
     constructor () {
         super();
         this.deleteTask = this.deleteTask.bind(this);
+        this.addPriority = this.addPriority.bind(this);
     }
 
     deleteTask () {
-        const { deleteTask, task } = this.props;
+        const { deleteTask, text } = this.props;
 
-        deleteTask(task);
+        deleteTask(text);
+    }
+
+    addPriority () {
+        const { addPriority, text, priority } = this.props;
+
+        addPriority(text, priority);
     }
 
     render () {
-        const { task } = this.props;
+        const { text, priority } = this.props;
 
         return (
             <li className = { Styles.task }>
                 <Checkbox color1 = { palette.blue } color2 = { palette.white } />
-                <span>{task}</span>
+                <span>{text}</span>
                 <div>
-                    <Star color1 = { palette.blue } color2 = { palette.blue } />
+                    <Star
+                        checked = { priority }
+                        color1 = { palette.blue }
+                        color2 = { palette.blue }
+                        onClick = { this.addPriority }
+                    />
                     <Edit color1 = { palette.blue } color2 = { palette.blue } />
                     <Delete
                         color1 = { palette.blue }

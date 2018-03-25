@@ -10,6 +10,7 @@ class Scheduler extends Component {
         this.addTask = this.addTask.bind(this);
         this.submitForm = this.submitForm.bind(this);
         this.deleteTask = this.deleteTask.bind(this);
+        this.addPriority = this.addPriority.bind(this);
     }
 
   state = {
@@ -36,15 +37,14 @@ class Scheduler extends Component {
 
       const { enterText } = this.state;
 
+      const newTask = {
+          text:     enterText,
+          priority: false,
+      };
+
       if (enterText) {
           this.setState(({ tasks }) => ({
-              tasks: [
-                  {
-                      text:    enterText,
-                      checked: false,
-                  },
-                  ...tasks
-              ],
+              tasks:     [newTask, ...tasks].sort((a, b) => b.priority - a.priority),
               enterText: '',
           }));
       }
@@ -53,6 +53,24 @@ class Scheduler extends Component {
   deleteTask (text) {
       this.setState(({ tasks }) => ({
           tasks: tasks.filter((task) => task.text !== text),
+      }));
+  }
+
+  addPriority (text, priority) {
+      const todos = this.state.tasks
+          .map((task) => {
+              if (text === task.text) {
+                  task.priority = !priority;
+
+                  return task;
+              }
+
+              return task;
+          })
+          .sort((a, b) => b.priority - a.priority);
+
+      this.setState(() => ({
+          tasks: todos,
       }));
   }
 
@@ -73,7 +91,13 @@ class Scheduler extends Component {
                       </form>
                       <ul>
                           {tasks.map((task, idx) => (
-                              <Task deleteTask = { this.deleteTask } key = { idx } task = { task.text } />
+                              <Task
+                                  addPriority = { this.addPriority }
+                                  deleteTask = { this.deleteTask }
+                                  key = { idx }
+                                  priority = { task.priority }
+                                  text = { task.text }
+                              />
                           ))}
                       </ul>
                   </section>

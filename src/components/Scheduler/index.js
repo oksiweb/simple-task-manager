@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-
 import Styles from './styles.scss';
 
 import Task from '../Task';
@@ -10,6 +9,7 @@ class Scheduler extends Component {
         super();
         this.addTask = this.addTask.bind(this);
         this.submitForm = this.submitForm.bind(this);
+        this.deleteTask = this.deleteTask.bind(this);
     }
 
   state = {
@@ -50,6 +50,12 @@ class Scheduler extends Component {
       }
   }
 
+  deleteTask (text) {
+      this.setState(({ tasks }) => ({
+          tasks: tasks.filter((task) => task.text !== text),
+      }));
+  }
+
   render () {
       const { tasks, enterText } = this.state;
 
@@ -66,7 +72,9 @@ class Scheduler extends Component {
                           <button disabled = { !enterText }>Добавить задачу</button>
                       </form>
                       <ul>
-                          {tasks.map((task, idx) => <Task key = { idx } task = { task.text } />)}
+                          {tasks.map((task, idx) => (
+                              <Task deleteTask = { this.deleteTask } key = { idx } task = { task.text } />
+                          ))}
                       </ul>
                   </section>
                   <footer>

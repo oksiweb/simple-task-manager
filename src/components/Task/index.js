@@ -9,6 +9,17 @@ import Styles from './styles.scss';
 import palette from '../../theme/palette.scss';
 
 class Task extends Component {
+    constructor () {
+        super();
+        this.deleteTask = this.deleteTask.bind(this);
+    }
+
+    deleteTask () {
+        const { deleteTask, task } = this.props;
+
+        deleteTask(task);
+    }
+
     render () {
         const { task } = this.props;
 
@@ -19,7 +30,11 @@ class Task extends Component {
                 <div>
                     <Star color1 = { palette.blue } color2 = { palette.blue } />
                     <Edit color1 = { palette.blue } color2 = { palette.blue } />
-                    <Delete color1 = { palette.blue } color2 = { palette.blue } />
+                    <Delete
+                        color1 = { palette.blue }
+                        color2 = { palette.blue }
+                        onClick = { this.deleteTask }
+                    />
                 </div>
             </li>
         );

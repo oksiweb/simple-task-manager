@@ -98,16 +98,20 @@ class Scheduler extends Component {
   }
 
   makeAllCompleted () {
-      console.log('dd');
+      const { completedAll } = this.state;
       const todos = this.state.tasks.map((task) => {
-          task.completed = true;
+          if (completedAll) {
+              task.completed = false;
+          } else {
+              task.completed = true;
+          }
 
           return task;
       });
 
       this.setState(() => ({
           tasks:        todos,
-          completedAll: true,
+          completedAll: !completedAll,
       }));
   }
 

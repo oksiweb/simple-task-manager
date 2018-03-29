@@ -16,6 +16,8 @@ class Scheduler extends Component {
         this.makeCompleted = this.makeCompleted.bind(this);
         this.makeAllCompleted = this.makeAllCompleted.bind(this);
         this.makeTaskEditable = this.makeTaskEditable.bind(this);
+        this.handleChangeSearch = this.handleChangeSearch.bind(this);
+        this.handleSearchKey = this.handleSearchKey.bind(this);
     }
 
   state = {
@@ -23,6 +25,7 @@ class Scheduler extends Component {
       enterText:    '',
       checked:      false,
       completedAll: false,
+      search:       '',
   };
 
   addTask (e) {
@@ -134,15 +137,33 @@ class Scheduler extends Component {
       }));
   }
 
+  handleChangeSearch (e) {
+      this.setState({
+          search: e.target.value,
+      });
+  }
+
+  handleSearchKey () {
+      if (event.key === 'Enter') {
+      }
+  }
+
   render () {
       const { tasks, enterText, completedAll } = this.state;
+      const filteredTasks = tasks.filter((task) => task.text.indexOf(this.state.search) !== -1);
 
       return (
           <div className = { Styles.scheduler }>
               <main>
                   <header>
                       <h1>Планировщик задач</h1>
-                      <input type = 'text' />
+                      <input
+                          placeholder = 'Поиск'
+                          type = 'search'
+                          value = { this.state.search }
+                          onChange = { this.handleChangeSearch }
+                          onKeyPress = { this.handleSearchKey }
+                      />
                   </header>
                   <section>
                       <form onSubmit = { this.submitForm }>
@@ -150,7 +171,7 @@ class Scheduler extends Component {
                           <button disabled = { !enterText }>Добавить задачу</button>
                       </form>
                       <ul>
-                          {tasks.map((task, idx) => (
+                          {filteredTasks.map((task, idx) => (
                               <Task
                                   addPriority = { this.addPriority }
                                   completed = { task.completed }

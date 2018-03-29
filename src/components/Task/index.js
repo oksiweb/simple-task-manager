@@ -9,60 +9,119 @@ import Styles from './styles.scss';
 import palette from '../../theme/palette.scss';
 
 class Task extends Component {
-    constructor () {
-        super();
+    constructor (props) {
+        super(props);
         this.deleteTask = this.deleteTask.bind(this);
         this.addPriority = this.addPriority.bind(this);
         this.makeCompleted = this.makeCompleted.bind(this);
+        this.makeInputEditable = this.makeInputEditable.bind(this);
+        this.changeMessage = this.changeMessage.bind(this);
+        this.handleEnterKey = this.handleEnterKey.bind(this);
     }
 
-    deleteTask () {
-        const { deleteTask, text } = this.props;
+  state = {
+      isEditing: false,
+      text:      this.props.text,
+  };
 
-        deleteTask(text);
-    }
+  deleteTask () {
+      const { deleteTask, text } = this.props;
 
-    addPriority () {
-        const { addPriority, text, priority } = this.props;
+      deleteTask(text);
+  }
 
-        addPriority(text, priority);
-    }
+  addPriority () {
+      const { addPriority, text, priority } = this.props;
 
-    makeCompleted () {
-        const { makeCompleted, text, completed } = this.props;
+      addPriority(text, priority);
+  }
 
-        makeCompleted(text, completed);
-    }
+  makeCompleted () {
+      const { makeCompleted, text, completed } = this.props;
 
-    render () {
-        const { text, priority, completed } = this.props;
+      makeCompleted(text, completed);
+  }
 
-        return (
-            <li className = { Styles.task }>
-                <Checkbox
-                    checked = { completed }
-                    color1 = { palette.blue }
-                    color2 = { palette.white }
-                    onClick = { this.makeCompleted }
-                />
-                <span>{text}</span>
-                <div>
-                    <Star
-                        checked = { priority }
-                        color1 = { palette.blue }
-                        color2 = { palette.blue }
-                        onClick = { this.addPriority }
-                    />
-                    <Edit color1 = { palette.blue } color2 = { palette.blue } />
-                    <Delete
-                        color1 = { palette.blue }
-                        color2 = { palette.blue }
-                        onClick = { this.deleteTask }
-                    />
-                </div>
-            </li>
-        );
-    }
+  makeInputEditable () {
+      const { completed } = this.props;
+
+      if (!completed) {
+          this.setState(() => ({
+              isEditing: true,
+          }));
+      }
+  }
+
+  changeMessage (e) {
+      this.setState({
+          text: e.target.value,
+      });
+  }
+
+  handleEnterKey (e) {
+      if (e.key === 'Enter') {
+          const { isEditing, text } = this.state;
+          const { id } = this.props;
+
+          this.setState({
+              isEditing: !isEditing,
+          });
+          if (isEditing === true) {
+              const { makeTaskEditable } = this.props;
+
+              makeTaskEditable(text, id);
+          }
+      }
+  }
+
+  render () {
+      const { text, priority, completed } = this.props;
+      const { isEditing } = this.state;
+
+      return (
+          <li className = { Styles.task }>
+              <div>
+                  <Checkbox
+                      checked = { completed }
+                      color1 = { palette.blue }
+                      color2 = { palette.white }
+                      onClick = { this.makeCompleted }
+                  />
+
+                  {isEditing ? (
+                      <input
+                          autoFocus
+                          disabled = { !isEditing }
+                          type = 'text'
+                          value = { this.state.text }
+                          onChange = { this.changeMessage }
+                          onKeyPress = { this.handleEnterKey }
+                      />
+                  ) : (
+                      <span>{text}</span>
+                  )}
+              </div>
+              <div>
+                  <Star
+                      checked = { priority }
+                      color1 = { palette.blue }
+                      color2 = { palette.blue }
+                      onClick = { this.addPriority }
+                  />
+                  <Edit
+                      color1 = { palette.blue }
+                      color2 = { palette.blue }
+                      onClick = { this.makeInputEditable }
+                  />
+                  <Delete
+                      color1 = { palette.blue }
+                      color2 = { palette.blue }
+                      onClick = { this.deleteTask }
+                  />
+              </div>
+          </li>
+      );
+  }
 }
 
 export default Task;

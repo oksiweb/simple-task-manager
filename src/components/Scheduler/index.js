@@ -15,6 +15,7 @@ class Scheduler extends Component {
         this.addPriority = this.addPriority.bind(this);
         this.makeCompleted = this.makeCompleted.bind(this);
         this.makeAllCompleted = this.makeAllCompleted.bind(this);
+        this.makeTaskEditable = this.makeTaskEditable.bind(this);
     }
 
   state = {
@@ -44,6 +45,7 @@ class Scheduler extends Component {
           text:      enterText,
           priority:  false,
           completed: false,
+          id:        Math.floor(Math.random() * 1000000),
       };
 
       if (enterText) {
@@ -97,6 +99,23 @@ class Scheduler extends Component {
       }));
   }
 
+  makeTaskEditable (text, id) {
+      const { tasks } = this.state;
+      const todos = tasks.map((task) => {
+          if (id === task.id) {
+              task.text = text;
+
+              return task;
+          }
+
+          return task;
+      });
+
+      this.setState(() => ({
+          tasks: todos,
+      }));
+  }
+
   makeAllCompleted () {
       const { completedAll } = this.state;
       const todos = this.state.tasks.map((task) => {
@@ -136,8 +155,10 @@ class Scheduler extends Component {
                                   addPriority = { this.addPriority }
                                   completed = { task.completed }
                                   deleteTask = { this.deleteTask }
+                                  id = { task.id }
                                   key = { idx }
                                   makeCompleted = { this.makeCompleted }
+                                  makeTaskEditable = { this.makeTaskEditable }
                                   priority = { task.priority }
                                   text = { task.text }
                               />

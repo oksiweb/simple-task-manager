@@ -28,6 +28,17 @@ class Scheduler extends Component {
       search:       '',
   };
 
+  componentWillMount () {
+      localStorage.getItem('tasks') &&
+      this.setState(() => ({
+          tasks: JSON.parse(localStorage.getItem('tasks')),
+      }));
+  }
+
+  componentWillUpdate (nextProps, nextState) {
+      localStorage.setItem('tasks', JSON.stringify(nextState.tasks));
+  }
+
   addTask (e) {
       e.preventDefault();
       const value = e.target.value;
@@ -150,7 +161,9 @@ class Scheduler extends Component {
 
   render () {
       const { tasks, enterText, completedAll } = this.state;
-      const filteredTasks = tasks.filter((task) => task.text.indexOf(this.state.search) !== -1);
+      const filteredTasks = tasks.filter(
+          (task) => task.text.indexOf(this.state.search) !== -1
+      );
 
       return (
           <div className = { Styles.scheduler }>
